@@ -1,6 +1,8 @@
 Pgadmin4
 =========
 
+[![Build Status](https://travis-ci.org/warmans/pgadmin4.svg?branch=master)](https://travis-ci.org/warmans/pgadmin4)
+
 Role to setup a pgadmin4 server.
 
 Requirements
