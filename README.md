@@ -25,8 +25,8 @@ Webserver Options
 
 Default User
 
-- `pgadmin4_initial_user_email`
-- `pgadmin4_initial_user_password`
+- `pgadmin4_initial_user_email` - default username used to login to the server
+- `pgadmin4_initial_user_password` - default password used to login to the server
 
 Password Reset Vars
 
@@ -41,4 +41,3 @@ License
 -------
 
 MIT
-
