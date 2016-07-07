@@ -3,7 +3,8 @@ Pgadmin4
 
 [![Build Status](https://travis-ci.org/warmans/pgadmin4.svg?branch=master)](https://travis-ci.org/warmans/pgadmin4)
 
-Role to setup a pgadmin4 server.
+Role to setup a pgadmin4 (beta) server. With this role pgadmin4 is configured to run as a web
+application. Be aware it's beta software and may not 100% work yet.
 
 Requirements
 ------------
