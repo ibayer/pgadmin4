@@ -1,0 +1,56 @@
+---
+- name: install python dependencies
+  apt: name={{ item }} state=present
+  with_items:
+    - python-pip
+    - python-dev
+    - postgresql-server-dev-all
+  notify: restart pgadmin4
+
+- name: install pip dependencies
+  pip: name=pexpect state=present version=3.3
+  notify: restart pgadmin4
+
+- name: install pgadmin4
+  pip: name={{ pgadmin4_pip_download }} state=present
+  notify: restart pgadmin4
+
+- name: create local config
+  shell: cd {{ pgadmin4_python2_dist_dir }}/pgadmin4 && cp config.py config_local.py
+  notify: restart pgadmin4
+
+- name: update local config
+  shell: sed -i "{{ item }}" {{ pgadmin4_python2_dist_dir }}/pgadmin4/config_local.py
+  with_items:
+    - "s/DEFAULT_SERVER.*/DEFAULT_SERVER = '{{ pgadmin4_server_bind }}'/"
+    - "s/DEFAULT_SERVER_PORT.*/DEFAULT_SERVER_PORT = {{ pgadmin4_server_port }}/"
+    - "s/CSRF_SESSION_KEY.*/CSRF_SESSION_KEY = '{{ pgadmin4_server_csrf_key }}'/"
+    - "s/SECRET_KEY.*/SECRET_KEY = '{{ pgadmin4_server_secret_key }}'/"
+    - "s/SECURITY_PASSWORD_SALT.*/SECURITY_PASSWORD_SALT = '{{ pgadmin4_server_password_salt }}'/"
+    - "s/UPGRADE_CHECK_ENABLED.*/UPGRADE_CHECK_ENABLED = {{ pgadmin4_upgrade_check_enabled }}/"
+    - "s/MAIL_SERVER.*/MAIL_SERVER = '{{ pgadmin4_mail_server}}'/"
+    - "s/MAIL_PORT.*/MAIL_PORT = {{ pgadmin4_mail_port }}/"
+    - "s/MAIL_USE_SSL.*/MAIL_USE_SSL = {{ pgadmin4_mail_use_ssl }}/"
+    - "s/MAIL_USERNAME.*/MAIL_USERNAME = '{{ pgadmin4_mail_username }}'/"
+    - "s/MAIL_PASSWORD.*/MAIL_PASSWORD = '{{ pgadmin4_mail_password }}'/"
+
+- name: copy systemd service
+  template: src=pgadmin4.service dest=/etc/systemd/system/.
+  notify: restart pgadmin4
+
+- name: reload systemd configs
+  command: systemctl daemon-reload
+
+- name: setup pgadmin
+  become: true
+  expect:
+    command: /usr/bin/python {{ pgadmin4_python2_dist_dir }}/pgadmin4/setup.py
+    creates: /root/.pgadmin
+    echo: true
+    responses:
+      'Email address': "{{ pgadmin4_initial_user_email }}"
+      '(?i).*password': "{{ pgadmin4_initial_user_password }}"
+
+- name: start pgadmin4
+  service: name=pgadmin4 state=started enabled=true
+  become: true
