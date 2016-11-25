@@ -1,6 +1,6 @@
 Pgadmin4
 =========
-
+ 
 [![Build Status](https://travis-ci.org/openearth-stack/pgadmin4.svg?branch=master)](https://travis-ci.org/openearth-stack/pgadmin4)
 
 Role to setup a pgadmin4 (beta) server. With this role pgadmin4 is configured to run as a web
