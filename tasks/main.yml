@@ -45,11 +45,12 @@
   become: true
   expect:
     command: /usr/bin/python {{ pgadmin4_python2_dist_dir }}/pgadmin4/setup.py
-    creates: /root/.pgadmin
+    creates: /var/lib/pgadmin/pgadmin4.db
     echo: true
     responses:
-      'Email address': "{{ pgadmin4_initial_user_email }}"
-      '(?i).*password': "{{ pgadmin4_initial_user_password }}"
+      '.*Email address': "{{ pgadmin4_initial_user_email }}"
+      '(?i).*Password': "{{ pgadmin4_initial_user_password }}"
+      '(?i).*Retype password': "{{ pgadmin4_initial_user_password }}"
 
 - name: start pgadmin4
   service: name=pgadmin4 state=started enabled=true
